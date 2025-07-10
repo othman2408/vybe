@@ -1,12 +1,23 @@
-import { caller } from "@/trpc/server";
+"use client";
+import { Button } from "@/components/ui/button";
+import { useTRPC } from "@/trpc/client";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 
-export default async function Home() {
-  const data = await caller.hello({ text: "test" });
-
+export default function Home() {
+  const trpc = useTRPC();
+  const invoke = useMutation(
+    trpc.invoke.mutationOptions({
+      onSuccess: () => {
+        toast.success("new background job created");
+      },
+    })
+  );
   return (
     <div>
-      <h1>Hello World</h1>
-      <p>{data?.greeting}</p>
+      <Button onClick={() => invoke.mutate({ text: "othman" })}>
+        Click me
+      </Button>
     </div>
   );
 }
