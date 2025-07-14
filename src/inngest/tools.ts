@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { getSandbox } from "./utils";
-import { createTool } from "@inngest/agent-kit";
+import { createTool, type Tool } from "@inngest/agent-kit";
+import { AgentState } from "@/lib/types";
 
 export function terminalTool(sandboxId: string) {
   return createTool({
@@ -48,7 +49,7 @@ export function createOrUpdateFilesTool(sandboxId: string) {
         })
       ),
     }),
-    handler: async ({ files }, { step, network }) => {
+    handler: async ({ files }, { step, network }: Tool.Options<AgentState>) => {
       const newFiles = await step?.run("createOrUpdateFiles", async () => {
         try {
           const updatedFiles = (await network.state.data.files) || {};
