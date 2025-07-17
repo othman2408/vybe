@@ -27,19 +27,19 @@ export const codeAgentFunction = inngest.createFunction(
         // baseUrl: "https://api.deepseek.com",
         // baseUrl: "https://api.groq.com/openai/v1",
         // baseUrl: "https://api.fireworks.ai/inference/v1",
-        // baseUrl: "https://generativelanguage.googleapis.com/v1beta/openai/",
+        baseUrl: "https://generativelanguage.googleapis.com/v1beta/openai/",
         // baseUrl: "https://integrate.api.nvidia.com/v1",
-        baseUrl: "https://openrouter.ai/api/v1",
-        model: "qwen/qwq-32b:free",
+        // baseUrl: "https://openrouter.ai/api/v1",
+        model: "gemini-2.5-pro",
         defaultParameters: {
           temperature: 0.1,
         },
         // apiKey: process.env.DEEPSEEK_API_KEY,
         // apiKey: process.env.GROQ_API_KEY,
         // apiKey: process.env.FIREWORKS_API_KEY,
-        // apiKey: process.env.GEMINI_API_KEY,
+        apiKey: process.env.GEMINI_API_KEY,
         // apiKey: process.env.NVIDIA_API_KEY,
-        apiKey: process.env.OPENROUTER_API_KEY,
+        // apiKey: process.env.OPENROUTER_API_KEY,
       }),
       tools: [
         terminalTool(sandboxId),
@@ -90,6 +90,7 @@ export const codeAgentFunction = inngest.createFunction(
       if (isError) {
         return await prisma.message.create({
           data: {
+            projectId: event.data.projectId,
             content: result.state.data.summary,
             role: "ASSISTANT",
             type: "ERROR",
@@ -98,6 +99,7 @@ export const codeAgentFunction = inngest.createFunction(
       }
       return await prisma.message.create({
         data: {
+          projectId: event.data.projectId,
           content: result.state.data.summary,
           role: "ASSISTANT",
           type: "RESULT",
