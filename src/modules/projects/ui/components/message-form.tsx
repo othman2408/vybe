@@ -1,12 +1,15 @@
+import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
+import { useTRPC } from "@/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ArrowUpIcon, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import TextareaAutosize from "react-textarea-autosize";
-import { Button } from "@/components/ui/button";
-import { SendIcon } from "lucide-react";
+import { toast } from "sonner";
+import { z } from "zod";
 
 interface MessageFormProps {
   projectId: string;
@@ -19,9 +22,8 @@ const formSchema = z.object({
 });
 
 export default function MessageForm({ projectId }: MessageFormProps) {
-  const [isFocused, setIsFocused] = useState(false);
-  const showUsage = false;
-
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -29,9 +31,33 @@ export default function MessageForm({ projectId }: MessageFormProps) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  const createMessage = useMutation(
+    trpc.messages.create.mutationOptions({
+      onSuccess: () => {
+        form.reset();
+        queryClient.invalidateQueries(
+          trpc.messages.getMany.queryOptions({ projectId })
+        );
+        //TODO: invalidate usage status
+      },
+      onError: (error) => {
+        //TODO: Redirect to pricing page
+        toast.error(error.message);
+      },
+    })
+  );
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    await createMessage.mutateAsync({
+      value: values.message,
+      projectId,
+    });
   }
+
+  const [isFocused, setIsFocused] = useState(false);
+  const showUsage = false;
+  const isPending = createMessage.isPending;
+  const isDisabled = isPending || !form.formState.isValid;
 
   return (
     <Form {...form}>
@@ -49,6 +75,7 @@ export default function MessageForm({ projectId }: MessageFormProps) {
           render={({ field }) => (
             <TextareaAutosize
               {...field}
+              disabled={isPending}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
               minRows={2}
@@ -71,8 +98,15 @@ export default function MessageForm({ projectId }: MessageFormProps) {
             </kbd>
             &nbsp;to submit
           </div>
-          <Button variant="outline" size="icon">
-            <SendIcon className="w-4 h-4" />
+          <Button
+            className={cn("size-8  rounded-full", isDisabled && "opacity-50")}
+            disabled={isDisabled}
+          >
+            {isPending ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <ArrowUpIcon className="w-4 h-4" />
+            )}
           </Button>
         </div>
       </form>
