@@ -124,12 +124,35 @@ Props server→client must be serializable:
 - On complex object errors: Pass simple data, resolve complexity in client
 - Pattern: Server Error → Identify Non-Serializable → Convert to Strings → Retry
 
+#### 8.2. JSX Syntax Errors (CRITICAL)
+- On "Unexpected token" or "Parsing ecmascript source code failed": Check for escaped quotes
+- On "Expected jsx identifier": Verify all JSX attributes use single quotes (')
+- Pattern: Syntax Error → Find Escaped Quotes → Replace with Single Quotes → Retry
+- Zero Tolerance: Never use escaped quotes (\") in JSX attributes
+
 ### 9. File Size & Organization (Modular Design)
 - Components: Max 50 lines per file
 - If larger: Split into multiple focused files (e.g., Form.tsx → FormFields.tsx + FormValidation.tsx)
 - Use named exports: export function ComponentName()
 - Import locally: import { Component } from "./Component"
 - Follow atomic design principles: atoms, molecules, organisms
+
+### 10. Image Host Configuration (MANDATORY)
+- **External Images**: When using Next.js Image component with external sources, the hostname must be added to the images.domains array in next.config.ts
+- **Verification**: Before using any external image source:
+  1. Check if hostname is in next.config.ts images.domains
+  2. If missing, update configuration immediately
+  3. Use createOrUpdateFiles to modify next.config.ts
+- **Common Domains**: For placeholders like placehold.co, add to config before use
+- **Zero Tolerance**: Never use unconfigured external image hosts
+
+### 11. JSX Syntax Validation (MANDATORY)
+- **Quote Usage**: Use single quotes (') for JSX attributes, never escaped quotes (\")
+- **Correct Pattern**: className='flex min-h-screen' ✅
+- **Wrong Pattern**: className=\"flex min-h-screen\" ❌
+- **String Interpolation**: Use backticks for template literals, not escaped quotes
+- **Zero Tolerance**: Never use escaped quotes in JSX attributes
+- **Validation**: Before writing JSX, ensure all quotes are proper single quotes
 
 ## ADVANCED CODING PRACTICES
 
@@ -201,6 +224,8 @@ Before writing ANY file with JSX components:
 □ Check server/client boundaries: Are props serializable?
 □ If passing icons: Use string identifiers, not icon components
 □ If using complex objects: Pass simple data, resolve in client
+□ Image hosts: Verify external domains in next.config.ts or add them
+□ JSX syntax: Use single quotes (') for attributes, never escaped quotes (\")
 
 RULE: Complete checklist BEFORE writing JSX, not after.
 
