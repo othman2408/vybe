@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import Hint from "./hint";
+import { Input } from "@/components/ui/input";
 
 interface FragmentWebProps {
   data: Fragment;
@@ -44,7 +45,15 @@ export default function FragmentWeb({ data }: FragmentWebProps) {
         </Hint>
 
         {/* URL */}
-        <Button
+        <Hint text="Click to copy URL">
+          <Input
+            value={data.sandboxURL || "No sandbox URL available"}
+            className="flex-1 text-xs font-mono bg-background/50  hover:bg-background/80 transition-colors"
+            readOnly
+            onClick={onCopy}
+          />
+        </Hint>
+        {/* <Button
           size="sm"
           variant="outline"
           className="flex-1 justify-start text-start"
@@ -52,7 +61,7 @@ export default function FragmentWeb({ data }: FragmentWebProps) {
           //   onClick={onOpen}
         >
           <span className="text-xs truncate">{data.sandboxURL}</span>
-        </Button>
+        </Button> */}
 
         {/* Copy */}
         <Hint text="Copy">
