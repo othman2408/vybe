@@ -45,14 +45,13 @@ export default function FragmentWeb({ data }: FragmentWebProps) {
         </Hint>
 
         {/* URL */}
-        <Hint text="Click to copy URL">
-          <Input
-            value={data.sandboxURL || "No sandbox URL available"}
-            className="flex-1 text-xs font-mono bg-background/50  hover:bg-background/80 transition-colors"
-            readOnly
-            onClick={onCopy}
-          />
-        </Hint>
+        <Input
+          value={data.sandboxURL || "No sandbox URL available"}
+          className="flex-1 text-xs font-mono bg-background/50  hover:bg-background/80 transition-colors"
+          readOnly
+          // onClick={onCopy}
+          title="Sandbox URL"
+        />
         {/* <Button
           size="sm"
           variant="outline"
