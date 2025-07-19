@@ -9,6 +9,7 @@ import MessageContainer from "../components/message-container";
 import { Suspense, useState } from "react";
 import { Fragment } from "@/generated/prisma";
 import ProjectHeader from "../components/project-header";
+import FragmentWeb from "../components/fragment-web";
 
 interface ProjectViewProps {
   projectId: string;
@@ -21,8 +22,9 @@ export default function ProjectView({ projectId }: ProjectViewProps) {
     <div className="h-screen">
       <ResizablePanelGroup direction="horizontal">
         <ResizablePanel
-          defaultSize={10}
-          minSize={20}
+          defaultSize={28}
+          minSize={22}
+          maxSize={40}
           className="flex flex-col min-h-0"
         >
           <Suspense fallback={<p>loading project...</p>}>
@@ -39,7 +41,9 @@ export default function ProjectView({ projectId }: ProjectViewProps) {
 
         <ResizableHandle withHandle />
 
-        <ResizablePanel defaultSize={65} minSize={50}></ResizablePanel>
+        <ResizablePanel defaultSize={72} minSize={60} maxSize={78}>
+          {!!activeFragment && <FragmentWeb data={activeFragment} />}
+        </ResizablePanel>
       </ResizablePanelGroup>
     </div>
   );
