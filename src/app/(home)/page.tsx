@@ -18,7 +18,7 @@ export default function Home() {
         <h1 className="text-2xl md:text-5xl font-bold text-center">
           Try building with Vybe
         </h1>
-        <p className="text-lg md:text-xl text-center text-muted-foreground">
+        <p className="text-md md:text-lg text-center text-muted-foreground">
           Play with Vybe to build anything you can imagine
         </p>
         <div className="max-w-3xl mx-auto w-full">
