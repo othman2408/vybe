@@ -7,7 +7,7 @@ import {
   RefreshCcwIcon,
 } from "lucide-react";
 import { useState } from "react";
-import Hint from "./hint";
+import Hint from "../../../../components/hint";
 import { Input } from "@/components/ui/input";
 
 interface FragmentWebProps {
