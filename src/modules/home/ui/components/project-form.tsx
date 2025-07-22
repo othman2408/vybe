@@ -10,9 +10,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import TextareaAutosize from "react-textarea-autosize";
-import { toast } from "sonner";
 import { z } from "zod";
 import { PROJECT_TEMPLATES } from "../../constant";
+import { useClerk } from "@clerk/nextjs";
 
 const formSchema = z.object({
   message: z.string().min(1, { message: "Message is required" }).max(1000, {
@@ -23,6 +23,8 @@ const formSchema = z.object({
 export default function ProjectForm() {
   const router = useRouter();
   const trpc = useTRPC();
+  const clerk = useClerk();
+
   const queryClient = useQueryClient();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,8 +41,9 @@ export default function ProjectForm() {
         //TODO: invalidate usage status
       },
       onError: (error) => {
-        //TODO: Redirect to pricing page
-        toast.error(error.message);
+        if (error.data?.code === "UNAUTHORIZED") {
+          clerk.openSignIn();
+        }
       },
     })
   );
