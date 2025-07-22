@@ -16,6 +16,9 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import FileExplorer from "@/components/file-explorer";
 import { FileCollection } from "@/lib/types";
+import { dark } from "@clerk/themes";
+import { UserButton } from "@clerk/nextjs";
+import { useCurrentTheme } from "@/hooks/use-current-themen";
 
 interface ProjectViewProps {
   projectId: string;
@@ -24,7 +27,7 @@ interface ProjectViewProps {
 export default function ProjectView({ projectId }: ProjectViewProps) {
   const [activeFragment, setActiveFragment] = useState<Fragment | null>(null);
   const [tabState, setTabState] = useState<"preview" | "code">("preview");
-
+  const currentTheme = useCurrentTheme();
   return (
     <div className="h-screen">
       <ResizablePanelGroup direction="horizontal">
@@ -73,6 +76,16 @@ export default function ProjectView({ projectId }: ProjectViewProps) {
                     <span>Upgrade</span>
                   </Link>
                 </Button>
+                <UserButton
+                  appearance={{
+                    elements: {
+                      userButtonBox: "rounded-md!",
+                      userButtonAvatarBox: "rounded-md! size-8!",
+                      userButtonTrigger: "rounded-md!",
+                    },
+                    baseTheme: currentTheme === "dark" ? dark : undefined,
+                  }}
+                />
               </div>
             </div>
             <TabsContent value="preview">

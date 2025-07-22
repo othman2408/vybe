@@ -6,14 +6,22 @@ import { useQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
+import { useUser } from "@clerk/nextjs";
 
 export default function ProjectsList() {
+  const { isSignedIn, user } = useUser();
   const trpc = useTRPC();
   const { data: projects } = useQuery(trpc.project.getMany.queryOptions());
 
+  if (!isSignedIn || !user) {
+    return null;
+  }
+
   return (
     <div className=" w-full rounded-xl p-8 border flex flex-col gap-y-6 sm:gap-y-4 ">
-      <h2 className="text-2xl font-semibold">Your projects</h2>
+      <h2 className="text-2xl font-semibold">
+        {user.firstName}&apos;s projects
+      </h2>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {projects?.length === 0 && (
           <div className="col-span-full text-center">
