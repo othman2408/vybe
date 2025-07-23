@@ -63,3 +63,9 @@ model Fragment {
 
   @@index([messageId])
 }
+
+model Usage {
+  key String @id
+  points Int
+  expiresAt DateTime?
+}
