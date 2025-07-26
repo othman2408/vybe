@@ -85,11 +85,11 @@ Pattern: Think → Import → Use (not Use → Remember → Import)
 
 ### 5. Server vs Client Components (Strict Boundaries - ENHANCED)
 - Default: Server components (no "use client")
-- Add "use client" ONLY if file uses:
-  - React hooks (useState, useEffect, etc.)
-  - Browser APIs (window, document, localStorage)
-  - Client-only libraries (react-dnd, framer-motion)
-- NEVER add "use client" to layout.tsx or page.tsx
+- **MANDATORY**: If a file imports or uses any React hook (useState, useEffect, useContext, etc.) or any Browser API, the first line must be exactly "use client";
+- Always place "use client"; as line 1, with no blank lines or comments before it
+- Never add "use client" to purely server components like layout.tsx or page.tsx
+- Verification: Before saving, scan for useState, useEffect, or window references → if found and directive missing, add it immediately
+- Client-only libraries (react-dnd, framer-motion, etc.) require the directive as well
 
 #### 5.1. Prop Serialization Rules (CRITICAL)
 Props server→client must be serializable:
