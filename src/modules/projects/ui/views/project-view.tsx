@@ -17,7 +17,7 @@ import Link from "next/link";
 import FileExplorer from "@/components/file-explorer";
 import { FileCollection } from "@/lib/types";
 import { dark } from "@clerk/themes";
-import { UserButton } from "@clerk/nextjs";
+import { useAuth, UserButton } from "@clerk/nextjs";
 import { useCurrentTheme } from "@/hooks/use-current-themen";
 
 interface ProjectViewProps {
@@ -25,6 +25,9 @@ interface ProjectViewProps {
 }
 
 export default function ProjectView({ projectId }: ProjectViewProps) {
+  const { has } = useAuth();
+  const hasProAccess = has?.({ plan: "pro" });
+
   const [activeFragment, setActiveFragment] = useState<Fragment | null>(null);
   const [tabState, setTabState] = useState<"preview" | "code">("preview");
   const currentTheme = useCurrentTheme();
@@ -70,12 +73,14 @@ export default function ProjectView({ projectId }: ProjectViewProps) {
                 </TabsTrigger>
               </TabsList>
               <div className="ml-auto flex items-center gap-x-2">
-                <Button asChild size={"sm"} variant={"default"}>
-                  <Link href={"/pricing"}>
-                    <CrownIcon className="size-4" />
-                    <span>Upgrade</span>
-                  </Link>
-                </Button>
+                {!hasProAccess && (
+                  <Button asChild size={"sm"} variant={"default"}>
+                    <Link href={"/pricing"}>
+                      <CrownIcon className="size-4" />
+                      <span>Upgrade</span>
+                    </Link>
+                  </Button>
+                )}
                 <UserButton
                   appearance={{
                     elements: {

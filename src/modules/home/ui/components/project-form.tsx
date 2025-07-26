@@ -13,6 +13,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { z } from "zod";
 import { PROJECT_TEMPLATES } from "../../constant";
 import { useClerk } from "@clerk/nextjs";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   message: z.string().min(1, { message: "Message is required" }).max(1000, {
@@ -37,12 +38,18 @@ export default function ProjectForm() {
     trpc.project.create.mutationOptions({
       onSuccess: (data) => {
         queryClient.invalidateQueries(trpc.project.getMany.queryOptions());
+        queryClient.invalidateQueries(trpc.usage.status.queryOptions());
         router.push(`/projects/${data.id}`);
-        //TODO: invalidate usage status
       },
       onError: (error) => {
+        toast.error(error.message);
+
         if (error.data?.code === "UNAUTHORIZED") {
           clerk.openSignIn();
+        }
+
+        if (error.data?.code === "TOO_MANY_REQUESTS") {
+          router.push("/pricing");
         }
       },
     })

@@ -1,17 +1,26 @@
 import { RateLimiterPrisma } from "rate-limiter-flexible";
-import { prisma } from "./db";
+import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 
-const FREE_PLAN_POINTS = 5;
-const FREE_PLAN_DURATION = 30 * 24 * 60 * 60;
-const GENERATE_IMAGE_POINTS = 1;
+// Duration of the usage
+const DURATION = 30 * 24 * 60 * 60;
+
+// Free plan
+const FREE_PLAN_POINTS = 2;
+const GENERATE_COST = 1;
+
+// Pro plan
+const PRO_PLAN_POINTS = 100;
 
 export async function getUsageTracker() {
+  const { has } = await auth();
+  const hasProAccess = has({ plan: "pro" });
+
   const usageTracker = new RateLimiterPrisma({
     storeClient: prisma,
     tableName: "usage",
-    points: FREE_PLAN_POINTS,
-    duration: FREE_PLAN_DURATION,
+    points: hasProAccess ? PRO_PLAN_POINTS : FREE_PLAN_POINTS,
+    duration: DURATION,
   });
 
   return usageTracker;
@@ -24,9 +33,16 @@ export async function consumeCredits() {
     throw new Error("Unauthorized");
   }
 
-  const usageTracker = await getUsageTracker();
-  const result = await usageTracker.consume(userId, GENERATE_IMAGE_POINTS);
-  return result;
+  try {
+    const usageTracker = await getUsageTracker();
+
+    const result = await usageTracker.consume(userId, GENERATE_COST);
+
+    return result;
+  } catch (error) {
+    console.error("Error consuming credits:", error);
+    throw error;
+  }
 }
 
 export async function getUsageStatus() {
@@ -36,8 +52,13 @@ export async function getUsageStatus() {
     throw new Error("Unauthorized");
   }
 
-  const usageTracker = await getUsageTracker();
-  const result = await usageTracker.get(userId);
+  try {
+    const usageTracker = await getUsageTracker();
+    const result = await usageTracker.get(userId);
 
-  return result;
+    return result;
+  } catch (error) {
+    console.error("Error getting usage status:", error);
+    return null;
+  }
 }
