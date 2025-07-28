@@ -3,6 +3,7 @@ import { useAuth } from "@clerk/nextjs";
 import { formatDuration, intervalToDuration } from "date-fns";
 import { CrownIcon } from "lucide-react";
 import Link from "next/link";
+import { useMemo } from "react";
 
 interface UsageProps {
   point: number;
@@ -13,6 +14,21 @@ export const Usage = ({ point, msBeforeNext }: UsageProps) => {
   const { has } = useAuth();
   const hasProAccess = has?.({ plan: "pro" });
 
+  const resetTime = useMemo(() => {
+    try {
+      return formatDuration(
+        intervalToDuration({
+          start: new Date(),
+          end: new Date(Date.now() + msBeforeNext),
+        }),
+        { format: ["months", "days", "hours"] }
+      );
+    } catch (error) {
+      console.error(`Error resetting usage: ${error}`);
+      return "unknown";
+    }
+  }, [msBeforeNext]);
+
   return (
     <div className="rounded-t-xl bg-background border border-b-0 p-2.5">
       <div className="flex items-center gap-x-2">
@@ -20,16 +36,7 @@ export const Usage = ({ point, msBeforeNext }: UsageProps) => {
           <p className="text-sm">
             {point} {hasProAccess ? "" : "free"} credits remaining
           </p>
-          <p className="text-xs text-muted-foreground">
-            Reset in{" "}
-            {formatDuration(
-              intervalToDuration({
-                start: new Date(),
-                end: new Date(Date.now() + msBeforeNext),
-              }),
-              { format: ["months", "days", "hours"] }
-            )}
-          </p>
+          <p className="text-xs text-muted-foreground">Reset in {resetTime}</p>
         </div>
 
         {!hasProAccess && (

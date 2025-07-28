@@ -19,6 +19,7 @@ import { FileCollection } from "@/lib/types";
 import { dark } from "@clerk/themes";
 import { useAuth, UserButton } from "@clerk/nextjs";
 import { useCurrentTheme } from "@/hooks/use-current-themen";
+import { ErrorBoundary } from "react-error-boundary";
 
 interface ProjectViewProps {
   projectId: string;
@@ -40,16 +41,20 @@ export default function ProjectView({ projectId }: ProjectViewProps) {
           maxSize={40}
           className="flex flex-col min-h-0"
         >
-          <Suspense fallback={<p>loading project...</p>}>
-            <ProjectHeader projectId={projectId} />
-          </Suspense>
-          <Suspense fallback={<p>loading messages...</p>}>
-            <MessageContainer
-              projectId={projectId}
-              activeFragment={activeFragment}
-              setActiveFragment={setActiveFragment}
-            />
-          </Suspense>
+          <ErrorBoundary fallback={<p>Error loading project</p>}>
+            <Suspense fallback={<p>loading project...</p>}>
+              <ProjectHeader projectId={projectId} />
+            </Suspense>
+          </ErrorBoundary>
+          <ErrorBoundary fallback={<p>Error loading messages</p>}>
+            <Suspense fallback={<p>loading messages...</p>}>
+              <MessageContainer
+                projectId={projectId}
+                activeFragment={activeFragment}
+                setActiveFragment={setActiveFragment}
+              />
+            </Suspense>
+          </ErrorBoundary>
         </ResizablePanel>
 
         <ResizableHandle className="hover:bg-primary  transition-colors" />
