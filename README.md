@@ -125,8 +125,13 @@ src/
 
    ```bash
    bun run db:migrate
-   bun run db:generate
    bun dev
+   ```
+
+   In a separate terminal, start Inngest:
+
+   ```bash
+   npx inngest-cli@latest dev
    ```
 
    Then open [localhost:3000](http://localhost:3000) and start building!
