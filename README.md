@@ -1,5 +1,7 @@
 # Vybe
 
+![Vybe Screenshot](https://github.com/othman2408/vybe/blob/main/public/Vybe.png)
+
 This project was created for learnign and to see how AI agents work!
 
 Just describe what you want to build in plain English, and watch as AI creates a full web app for you. This was built as a learning project to explore how AI can help with coding and development.
