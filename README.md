@@ -41,7 +41,7 @@ Tell Vybe what you want to build (like "a todo app" or "a landing page for my co
 - ![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=flat&logo=prisma&logoColor=white) **Prisma** - Database ORM with migrations
 - ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=flat&logo=postgresql&logoColor=white) **PostgreSQL** - Primary database
 - ![Inngest](https://img.shields.io/badge/Inngest-000000?style=flat) **Inngest** - Background job processing
-- ![E2B](https://img.shields.io/badge/E2B-FF6B35?style=flat) **E2B Code Interpreter** - Isolated code execution sandboxes
+- ![E2B](https://img.shields.io/badge/E2B-FF6B35?style=flat) **E2B Sandbox** - Isolated code execution sandboxes
 
 ### AI & Processing
 
