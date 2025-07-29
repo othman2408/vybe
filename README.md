@@ -105,22 +105,14 @@ src/
 3. **Set up your `.env`**
 
    ```bash
-   # Database - check neon db or supabase or any other provider
-   DATABASE_URL="postgresql://..."
+   cp env.example .env
+   ```
 
-   # Authentication (Clerk)
-   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="..."
-   CLERK_SECRET_KEY="..."
+   Then fill in your actual API keys and database URL:
 
-   # AI Model
-   DEEPSEEK_API_KEY="..."
-
-   # Code Execution
-   E2B_API_KEY="..."
-
-   # Background Jobs (Inngest)
-   INNGEST_EVENT_KEY="..."
-   INNGEST_SIGNING_KEY="..."
+   ```bash
+   # Required: Database, Clerk keys, AI provider key, E2B key, Inngest keys
+   # The env.example file has all the variables you need
    ```
 
 4. **Set up the database and run**
